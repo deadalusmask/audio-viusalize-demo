@@ -23,7 +23,7 @@ new Promise((resolve => {
   source.connect(analyser)
   analyser.connect(audioContext.destination)
   analyser.fftSize = 1024
-  const dataArray = new Float32Array(analyser.frequencyBinCount)
+  const frequencyData = new Float32Array(analyser.frequencyBinCount)
   console.log(analyser)
   
   const gl = canvas.getContext('webgl2')
@@ -66,14 +66,11 @@ new Promise((resolve => {
       gl.viewport(0, 0, canvas.width, canvas.height)
     }
   
-    // shader.use()
     shader.setUniform('iTime', 'FLOAT', time)
   
-    //analyser.getFloatTimeDomainData(dataArray)
-    analyser.getFloatFrequencyData(dataArray) // byteLength: 512 * 4
-  
+    analyser.getFloatFrequencyData(frequencyData) // byteLength: 512 * 4
     gl.bindBuffer(gl.UNIFORM_BUFFER, ubuffer)
-    gl.bufferData(gl.UNIFORM_BUFFER, dataArray.buffer, gl.DYNAMIC_DRAW)
+    gl.bufferData(gl.UNIFORM_BUFFER, frequencyData, gl.DYNAMIC_DRAW)
     // console.log(gl.getBufferParameter(gl.UNIFORM_BUFFER, gl.BUFFER_SIZE)) // 2048 ok
     
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)

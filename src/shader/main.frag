@@ -1,7 +1,7 @@
 #version 300 es
 precision highp float;
 
-const int DATA_LENGTH = 512;
+const int DATA_LENGTH = 128;
 
 uniform Block {
   float data[DATA_LENGTH];
@@ -24,7 +24,7 @@ float random (in vec2 st) {
 void main() {
 
   vec2 uv = fragCoord / iResolution;
-  vec2 p = (-iResolution + 2. * (fragCoord)) / iResolution.y; // -1 <> 1 by height  
+  // vec2 p = (-iResolution + 2. * (fragCoord)) / iResolution.x; // -1 <> 1 by height
   // vec2 pm = (-iResolution + 2. * (vec2(iMouse.x, iResolution.y-iMouse.y))) / iResolution.y;
   
   // float rotation = acos(dot(vec2(0., 1.), normalize(p)));
@@ -34,10 +34,18 @@ void main() {
   // int idx = int(rotation/(PI*2.) * 128.);
   // float circle = length(p) - 0.8 - (a.data[idx])/1024. ; //;
   // float g = pow((abs(circle)), 0.2);
-  p = uv * 2. - 1.;
-  p.x = p.x*0.5 + .5;
-  int idx = int(p.x * float(DATA_LENGTH)) - 1;
-  float note = step(0.0025, abs(p.y - data[idx]/1024.)); 
-  float g = min(smoothstep(0.28, 0.3, note), pow(abs(p.y + 1.)+0.2, 0.2));
+  vec2 pos;
+  if (iResolution.y / 20. > 32.) {
+    pos = vec2(uv.x, uv.y * 20. - 1. );
+  } else {
+    pos = vec2(uv.x, uv.y - 128./iResolution.y);
+  }
+  // vec2 pos = vec2(uv.x, uv.y * 20. - 1. ); // x 0<>1, y -0.5<>0.5
+  int idx = int(pos.x * float(DATA_LENGTH));
+  float dx = (data[idx]+30.)/70.; // -30 <> -100 => -0 <> -1
+  float note = step(0., pos.y - dx); 
+
+  float shadow = mix(pow(abs(abs(uv.y - 0.5) - 1.), 0.2), pow(abs(abs(uv.x-0.5) - 1.), 0.2), 0.5);
+  float g = min(note + 0.3, shadow);
   fragColor = vec4(vec3(g), 1.);
 }

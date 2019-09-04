@@ -29,7 +29,7 @@ module.exports = {
   ],
   devServer: {
     port: 8000,
-    hotOnly: true,
+    hot: true,
     disableHostCheck: true,
     contentBase: path.join(__dirname, 'public')
   }
