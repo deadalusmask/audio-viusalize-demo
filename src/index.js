@@ -48,6 +48,7 @@ new Promise((resolve => {
   // uniform buffer
   const uniformBlockIndex = gl.getUniformBlockIndex(shader.program, 'Block')
   const ubuffer = gl.createBuffer()
+  gl.bindBuffer(gl.UNIFORM_BUFFER, ubuffer)
   const uniformBufferIndex = 0
   gl.uniformBlockBinding(shader.program, uniformBlockIndex, uniformBufferIndex)
   gl.bindBufferBase(gl.UNIFORM_BUFFER, uniformBufferIndex, ubuffer)
@@ -69,7 +70,6 @@ new Promise((resolve => {
     shader.setUniform('iTime', 'FLOAT', time)
   
     analyser.getFloatFrequencyData(frequencyData) // byteLength: 512 * 4
-    gl.bindBuffer(gl.UNIFORM_BUFFER, ubuffer)
     gl.bufferData(gl.UNIFORM_BUFFER, frequencyData, gl.DYNAMIC_DRAW)
     // console.log(gl.getBufferParameter(gl.UNIFORM_BUFFER, gl.BUFFER_SIZE)) // 2048 ok
     

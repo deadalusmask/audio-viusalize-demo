@@ -43,7 +43,8 @@ void main() {
   float dx = (data[idx]+30.)/70.; // -30 <> -100 => -0 <> -1
   float note = step(0., pos.y - dx); 
 
-  float shadow = mix(pow(abs(abs(uv.y - 0.5) - 1.), 0.2), pow(abs(abs(uv.x-0.5) - 1.), 0.2), 0.5);
-  float g = min(note + 0.3, shadow);
-  fragColor = vec4(vec3(g), 1.);
+  float g = -0.3*note+0.3;
+  float shadow = 1. - mix(pow(abs(abs(uv.y - 0.5) - 1.), 0.2), pow(abs(abs(uv.x-0.5) - 1.), 0.2), 0.5);
+  float alpha = clamp(shadow + (1.-note), 0., 1.) ;
+  fragColor = vec4(vec3(g), alpha);
 }
