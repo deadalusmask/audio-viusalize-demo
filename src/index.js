@@ -79,4 +79,3 @@ new Promise((resolve => {
   }
   renderLoop(0)
 })
-
